@@ -1,0 +1,39 @@
+.container {
+  padding: 0; /* parent view will add padding; left column gets its own padding */
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  padding: 4px 0 10px 0;
+  z-index: 1;
+}
+
+.heading {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 6px 0;
+  text-align: left;
+  color: #374151;
+}
+
+.search {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+
+.error {
+  color: red;
+  font-weight: 500;
+  margin: 8px 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}

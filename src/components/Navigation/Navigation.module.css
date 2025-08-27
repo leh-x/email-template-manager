@@ -1,0 +1,16 @@
+.nav {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  padding: 0.5rem;
+}
+
+.link {
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: black;
+}
+
+.active {
+  font-weight: bold;
+  border-bottom: 2px solid blue;
+}

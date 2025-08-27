@@ -1,0 +1,54 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "email-generator",
+  "version": "2.0.0",
+  "identifier": "com.tauri.dev.emailgenerator.lh",
+  "build": {
+    "frontendDist": "../build",
+    "devUrl": "http://localhost:3000",
+    "beforeDevCommand": "npm start",
+    "beforeBuildCommand": "npm run build"
+  },
+
+  "app": {
+    "windows": [
+      {
+        "title": "Email Template Compiler",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null,
+      "capabilities": [
+        {
+          "identifier": "clipboard",
+          "description": "CrossCopy clipboard permissions",
+          "windows": ["*"],
+          "permissions": [
+            "clipboard:write-all"
+          ]
+        }
+      ]
+    }
+  },
+
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  },
+
+  "plugins": {
+      "clipboard-manager": {}
+  }
+
+}

@@ -1,0 +1,81 @@
+.card {
+  position: relative; /* This makes the menu position relative to the card */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+
+.menuWrapper {
+  position: relative; /* anchor for the menu */
+  display: inline-block;
+}
+
+.menuIcon {
+  cursor: pointer;
+}
+
+.menu {
+  position: absolute;
+  top: 100%;     /* Start at the bottom of the icon */
+  left: 100%;    /* Start at the right edge of the icon */
+  transform: translate(-100%, 0); /* Shift left by the menu's full width */
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+
+.menu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.menu button:hover {
+  background-color: #f0f0f0;
+}

@@ -1,0 +1,11 @@
+/* Danger variant matches your Delete button styling */
+.danger {
+  border-color: var(--danger-border);
+  color: var(--danger-color);
+}
+.danger:hover {
+  color: var(--icon-danger);
+  border-color: var(--icon-danger-hover);
+}
+
+
