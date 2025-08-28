@@ -4,7 +4,7 @@ import { core } from '@tauri-apps/api';
 import clipboard from 'tauri-plugin-clipboard-api';
 import TemplateList, { TemplateFile } from '../components/TemplateList/TemplateList';
 
-import { CopyIcon20, SaveIcon24 } from '../ui/icons';
+import { CopyIcon20, SaveIcon24, ChevronDownIcon16 } from '../ui/icons';
 import { COLOURS } from '../ui/theme/theme';
 import { useToast } from '../ui/toast';
 import { STRINGS } from '../ui/strings';
@@ -48,6 +48,7 @@ export default function EmailCompilerView() {
   const [signatureImageB64, setSignatureImageB64] = useState<string | null>(null);
 
   const { showToast } = useToast();
+  const [showPreview, setShowPreview] = useState(false);
 
   // Load salutations, valedictions, and signature names
   useEffect(() => {
@@ -345,16 +346,6 @@ export default function EmailCompilerView() {
               >
                 <button
                   type="button"
-                  onClick= { handleCopy }
-                  className= { elements.iconBtn }
-                  title="Copy composed email"
-                  aria-label="Copy composed email"
-                >
-                  <CopyIcon20 />
-                </button>
-
-                <button
-                  type="button"
                   onClick= { handleSaveTemplate }
                   disabled= { !selectedTemplate }
                   className= { elements.iconBtn }
@@ -436,6 +427,63 @@ export default function EmailCompilerView() {
               {signatureNames.map((n) => <option key={n} value={n}>{n}</option>)}
             </select>
           </div>
+        </div>
+        <div
+          style={{
+            borderTop: `1px solid ${COLOURS.divider}`,
+            marginTop: '1rem',
+            paddingTop: '0.5rem',
+            background: '#f3f4f6',
+            borderRadius: 8,
+            padding: '1rem'
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              cursor: 'pointer'
+            }}
+            onClick={() => setShowPreview(prev => !prev)}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span className={elements.subtitle}>Preview</span>
+              <ChevronDownIcon16
+                style={{
+                  transition: 'transform 0.2s ease',
+                  transform: showPreview ? 'rotate(180deg)' : 'rotate(0deg)'
+                }}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation(); // prevent collapsing when clicking copy
+                handleCopy();
+              }}
+              className={elements.iconBtn}
+              title="Copy composed email"
+              aria-label="Copy composed email"
+            >
+              <CopyIcon20 />
+            </button>
+          </div>
+
+          {showPreview && (
+            <div
+              style={{
+                marginTop: '1rem',
+                padding: '1rem',
+                border: `1px solid ${COLOURS.border}`,
+                borderRadius: 8,
+                background: '#fff',
+                fontFamily: 'sans-serif',
+                color: '#111827'
+              }}
+              dangerouslySetInnerHTML={{ __html: composed.html }}
+            />
+          )}
         </div>
       </div>
     </div>

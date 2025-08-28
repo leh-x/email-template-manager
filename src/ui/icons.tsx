@@ -115,3 +115,17 @@ export const SaveIcon24 = (props: React.SVGProps<SVGSVGElement>) => (
     />
   </svg>
 );
+
+
+export const ChevronDownIcon16 = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 1024 1024"
+    fill="currentColor"
+    {...props}
+  >
+    <path d="M104.704 338.752a64 64 0 0 1 90.496 0l316.8 316.8l316.8-316.8a64 64 0 0 1 90.496 90.496L557.248 791.296a64 64 0 0 1-90.496 0L104.704 429.248a64 64 0 0 1 0-90.496"/>
+  </svg>
+);
