@@ -1,6 +1,7 @@
 // src/components/TemplateList/TemplateList.tsx
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { core } from '@tauri-apps/api';
+
 import TemplateCard from '../TemplateCard/TemplateCard';
 import styles from './TemplateList.module.css';
 
@@ -9,6 +10,13 @@ export type TemplateFile = {
   content: string;
   last_modified: string;
 };
+
+interface TemplateListProps {
+  selectedName: string | null;
+  onSelectTemplate: (tpl: TemplateFile) => void;
+  refreshKey?: number;
+}
+
 
 function normalizeFavourites(input: unknown): Set<string> {
   // Accept string[] or legacy map<string, boolean>
@@ -23,33 +31,34 @@ function normalizeFavourites(input: unknown): Set<string> {
   return set;
 }
 
-interface TemplateListProps {
-  selectedName: string | null;
-  onSelectTemplate: (tpl: TemplateFile) => void;
-}
 
-const TemplateList: React.FC<TemplateListProps> = ({ selectedName, onSelectTemplate }) => {
+const TemplateList: React.FC<TemplateListProps> = ({ 
+  selectedName, 
+  onSelectTemplate,
+  refreshKey 
+}) => {
+
   const [templates, setTemplates] = useState<TemplateFile[]>([]);
   const [favourites, setFavourites] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  // Load templates + favourites on mount
-  useEffect(() => {
-    core.invoke<TemplateFile[]>('load_templates')
-      .then(setTemplates)
-      .catch((err) => {
-        console.error(err);
-        setError('Failed to load templates');
-      });
+  // Always fetch the latest file content on selection before notifying parent
+  const handleSelectByName = useCallback(async (name: string) => {
+    try {
+      const content = await core.invoke<string>('load_template', { name }); // calls your Rust command
+      const meta = templates.find(t => t.name === name);      
 
-    core.invoke<unknown>('load_favourites')
-      .then((data) => setFavourites(normalizeFavourites(data)))
-      .catch((err) => {
-        console.error(err);
-        setError((prev) => prev ?? 'Failed to load favourites');
+      onSelectTemplate({
+        name,
+        content,
+        last_modified: meta?.last_modified ?? new Date().toISOString(),
       });
-  }, []);
+    } catch (err) {
+      console.error('Failed to load template', err);
+      setError(prev => prev ?? 'Failed to load template');
+    }
+  }, [templates, onSelectTemplate]);
 
   const toggleFavourite = useCallback(async (filename: string) => {
     const next = new Set(favourites);
@@ -83,6 +92,24 @@ const TemplateList: React.FC<TemplateListProps> = ({ selectedName, onSelectTempl
     return list;
   }, [templates, favourites, search]);
 
+  // Load templates + favourites on mount and refresh
+  useEffect(() => {
+    core.invoke<TemplateFile[]>('load_templates')
+      .then(setTemplates)
+      .catch((err) => {
+        console.error(err);
+        setError('Failed to load templates');
+      });
+
+    core.invoke<unknown>('load_favourites')
+      .then((data) => setFavourites(normalizeFavourites(data)))
+      .catch((err) => {
+        console.error(err);
+        setError((prev) => prev ?? 'Failed to load favourites');
+      });
+  }, [refreshKey]);
+
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -107,7 +134,7 @@ const TemplateList: React.FC<TemplateListProps> = ({ selectedName, onSelectTempl
             last_modified={t.last_modified}
             isFavourite={favourites.has(t.name)}
             selected={selectedName === t.name}
-            onSelect={() => onSelectTemplate(t)}
+            onSelect={handleSelectByName}
             onToggleFavourite={toggleFavourite}
           />
         ))}

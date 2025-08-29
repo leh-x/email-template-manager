@@ -52,6 +52,18 @@ export default function SignaturesView() {
   }
 
   const handleSave = () => {
+    const missing = {
+      signatureName: signatureName.trim() === '',
+      name: name.trim() ==='',
+      position: position.trim() === '',
+      selectedLocation: selectedLocation.trim() === ''
+    };
+    const hasMissing = Object.values(missing).some(Boolean);
+    if (hasMissing) {
+      showToast({message: STRINGS.missingFields, variant: 'danger'});
+      return;
+    }
+
     const signature = {
       signature_name: signatureName,
       name,
@@ -461,7 +473,11 @@ export default function SignaturesView() {
               </div>
 
               {/* Name and Position */}
-              <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+              <div style={{ 
+                display: 'flex', 
+                gap: '2rem', 
+                marginBottom: '1rem',
+              }}>
                 <div style={{ flex: 1 }}>
                   <label
                     className= { elements.subtitle }
@@ -493,7 +509,11 @@ export default function SignaturesView() {
               </div>
 
               {/* Company and Department */}
-              <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+              <div style={{ 
+                display: 'flex', 
+                gap: '2rem', 
+                marginBottom: '1rem' 
+              }}>
                 <div style={{ flex: 1 }}>
                   <label 
                     className= { elements.subtitle }
