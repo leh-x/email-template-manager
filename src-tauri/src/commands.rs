@@ -1,5 +1,7 @@
 use std::fs;
 use std::env;
+use std::thread;
+use std::time::Duration;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
@@ -138,11 +140,6 @@ pub fn save_cache(cache: Cache) -> Result<(), String>
   Ok(())
 }
 
-// commands.rs
-use std::time::Duration;
-use std::thread;
-
-// ...existing structs...
 
 #[tauri::command]
 pub fn update_cache(patch: serde_json::Value) -> Result<(), String> {
@@ -427,6 +424,37 @@ pub fn load_templates() -> Result<Vec<TemplateFile>, String>
   }
   
   Ok(templates)
+}
+
+
+#[tauri::command]
+pub fn load_template(name: String) -> Result<String, String> {
+    // Reuse your existing helpers so we read from the same place and
+    // with the same naming convention as save_template.
+    let dir = templates_dir()?;
+    ensure_dir(&dir)?; // make sure the Templates/ folder exists
+
+    // Prefer exact file name the UI uses (without extension), then add .txt.
+    // If the name already has an extension, we'll respect it.
+    let mut candidate = dir.join(&name);
+    if candidate.extension().is_none() {
+        candidate.set_extension("txt");
+    }
+
+    // If the direct path doesn't exist, try the sanitized variant
+    // (this covers cases where the saved file used the sanitized name).
+    let content = if candidate.exists() {
+        std::fs::read_to_string(&candidate).map_err(|e| e.to_string())?
+    } else {
+        let sanitized = format!("{}.txt", sanitize_filename(&name));
+        let path = dir.join(sanitized);
+        if !path.exists() {
+            return Err(format!("Template '{}' not found", name));
+        }
+        std::fs::read_to_string(&path).map_err(|e| e.to_string())?
+    };
+
+    Ok(content)
 }
 
 

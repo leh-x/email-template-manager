@@ -10,6 +10,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler!
             [
                 commands::load_templates,
+                commands::load_template,
                 commands::save_template,
                 commands::load_favourites,
                 commands::save_favourites,

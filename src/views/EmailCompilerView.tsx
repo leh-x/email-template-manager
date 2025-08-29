@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { core } from '@tauri-apps/api';
 import clipboard from 'tauri-plugin-clipboard-api';
+
 import TemplateList, { TemplateFile } from '../components/TemplateList/TemplateList';
 
 import { CopyIcon20, SaveIcon24, ChevronDownIcon16 } from '../ui/icons';
@@ -49,6 +50,7 @@ export default function EmailCompilerView() {
 
   const { showToast } = useToast();
   const [showPreview, setShowPreview] = useState(false);
+  const [tplRefreshKey, setTplRefreshKey] = useState(0);
 
   // Load salutations, valedictions, and signature names
   useEffect(() => {
@@ -97,6 +99,9 @@ export default function EmailCompilerView() {
       setSelectedTemplate((prev) =>
         prev ? { ...prev, content: templateBody, last_modified: new Date().toISOString() } : prev
       );
+
+      setTplRefreshKey((k) => k + 1);
+
     } catch (err) {
       console.error('Failed to save template', err);
     }
@@ -261,6 +266,7 @@ export default function EmailCompilerView() {
         <TemplateList
           selectedName={selectedTemplate?.name ?? null}
           onSelectTemplate={handleSelectTemplate}
+          refreshKey={tplRefreshKey}
         />
       </div>
 
